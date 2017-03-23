@@ -47,4 +47,6 @@ COPY docker.js /windshaft-cartodb/config/environments/docker.js
 ADD run.sh /run.sh
 RUN chmod 755 /*.sh
 
+ENTRYPOINT ["/run.sh"]
+
 EXPOSE 6081 6082
