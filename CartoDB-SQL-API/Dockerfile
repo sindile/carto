@@ -56,6 +56,6 @@ ADD ./development.js CartoDB-SQL-API/config/environments/development.js
 
 ADD start.sh /start.sh
 RUN chmod +x /start.sh
-CMD ["start.sh"]
+ENTRYPOINT ["/start.sh"]
 
 EXPOSE 8125
