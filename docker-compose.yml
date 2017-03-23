@@ -20,3 +20,13 @@ services:
     ports:
       - "6082:6082"
       - "6081:6081"
+    environment:
+      - CARTO_ENV=development
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - CARTO_SESSION_DOMAIN=localdomain
+      - CORS_ENABLED=true
+      - WINDSHAFT_PORT=8181
