@@ -1,18 +1,22 @@
-cartodb-postgresql:
-  build: cartodb-postgresql/.
-  ports:
-    - "5432:5432"
+version: '2'
+services:
+  cartodb-postgresql:
+    build: cartodb-postgresql/.
+    ports:
+      - "5432:5432"
 
-cartodb-redis:
-  build: cartodb-redis/.
-  ports: "6379:6379"
+  cartodb-redis:
+    build: cartodb-redis/.
+    ports:
+      - "6379:6379"
 
-CartoDB-SQL-API:
-  build: CartoDB-SQL-API/.
-  ports: "8125:8125"
+  cartodb-sql-api:
+    build: CartoDB-SQL-API/.
+    ports:
+      - "8125:8125"
 
-Windshaft-cartodb:
-  build: Windshaft-cartodb/.
-  ports:
-    - "6082:6082"
-    - "6081:6081"
+  windshaft-cartodb:
+    build: Windshaft-cartodb/.
+    ports:
+      - "6082:6082"
+      - "6081:6081"
