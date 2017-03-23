@@ -1,0 +1,115 @@
+#  http://cartodb.readthedocs.io/en/latest/install.html
+# CartoDB is guaranteed to run without any issue in Ubuntu 12.04 x64. This documentation describes the process to install CartoDB in this specific OS version.
+
+FROM ubuntu:12.04
+
+
+# -----------------------------------------------------------------
+# System requirements
+# -----------------------------------------------------------------
+
+# Systemp locales
+
+RUN locale-gen en_US.UTF-8 &&  update-locale LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8
+
+# Build essentials
+
+RUN apt-get update && apt-get install -y --no-install-recommends  autoconf binutils-doc bison build-essential flex
+
+# GIT
+
+RUN apt-get install -y -q --no-install-recommends git
+
+# APT tools
+
+RUN apt-get install -y -q --no-install-recommends python-software-properties
+
+
+# -----------------------------------------------------------------
+# PostgreSQL
+# -----------------------------------------------------------------
+
+# Add PPA repository
+
+RUN add-apt-repository -y ppa:cartodb/postgresql-9.5 && apt-get update
+
+# Install client packages
+
+RUN apt-get install -y -q --no-install-recommends libpq5 \
+                     libpq-dev \
+                     postgresql-client-9.5 \
+                     postgresql-client-common
+
+# Install server packages
+
+RUN apt-get install -y -q --no-install-recommends postgresql-9.5 \
+                     postgresql-contrib-9.5 \
+                     postgresql-server-dev-9.5 \
+                     postgresql-plpython-9.5
+
+COPY pg_hba.conf /etc/postgresql/9.5/main/pg_hba.conf
+
+# Create some users used by some CartoDB apps internally
+
+# RUN service postgresql restart &&  createuser publicuser --no-createrole --no-createdb --no-superuser -U postgres && createuser tileuser --no-createrole --no-createdb --no-superuser -U postgres
+
+# Install CartoDB postgresql extension
+
+RUN git clone https://github.com/CartoDB/cartodb-postgresql.git && \
+              cd cartodb-postgresql && \
+              make all install
+
+
+# -----------------------------------------------------------------
+# GIS dependencies
+# -----------------------------------------------------------------
+
+# Add GIS PPA
+
+RUN add-apt-repository -y ppa:cartodb/gis && apt-get update
+
+# Install Proj
+
+RUN apt-get install -y -q --no-install-recommends proj proj-bin proj-data libproj-dev
+
+# Install JSON
+
+RUN apt-get install -y -q --no-install-recommends libjson0 libjson0-dev python-simplejson
+
+# Install GEOS
+
+RUN apt-get install -y -q --no-install-recommends libgeos-c1v5 libgeos-dev
+
+# Install GDAL
+
+RUN apt-get install -y -q --no-install-recommends gdal-bin libgdal1-dev libgdal-dev
+RUN apt-get install -y -q --no-install-recommends gdal2.1-static-bin
+
+# -----------------------------------------------------------------
+# PostGIS
+# -----------------------------------------------------------------
+
+# Install PostGIS
+
+RUN apt-get install -y -q --no-install-recommends libxml2-dev
+RUN apt-get install -y -q --no-install-recommends liblwgeom-2.2.2 postgis postgresql-9.5-postgis-2.2 postgresql-9.5-postgis-scripts
+
+# Initialize template postgis database
+
+#RUN service postgresql restart && sleep 5 && \
+#            createdb -T template0 -O postgres -U postgres -E UTF8 template_postgis && \
+# If you see the eror stating the language is already enabled you are good to
+#            createlang plpgsql -U postgres -d template_postgis && \
+#            psql -U postgres template_postgis -c 'CREATE EXTENSION postgis;CREATE EXTENSION postgis_topology;' && \
+#            ldconfig
+
+# Run an installcheck to verify the database has been installed properly
+
+#RUN service postgresql start && sleep 10 && \
+#            ldconfig && \
+#            cd cartodb-postgresql && PGUSER=postgres make installcheck
+
+ADD start.sh /start.sh
+RUN chmod +x /start.sh
+ENTRYPOINT ["/start.sh"]
+EXPOSE 5432
