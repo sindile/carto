@@ -39,7 +39,8 @@ services:
       - cartodb-redis
   cartodb:
     build: cartodb/.
-    ports: "3000:3000"
+    ports:
+      - "3000:3000"
     links:
       - cartodb-postgresql
       - cartodb-redis
