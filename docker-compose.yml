@@ -44,3 +44,10 @@ services:
     links:
       - cartodb-postgresql
       - cartodb-redis
+    environment:
+      - CARTO_ENV=development
+      - DB_HOST=cartodb-postgresql
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - REDIS_HOST=cartodb-redis
+      - REDIS_PORT=6379

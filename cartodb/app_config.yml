@@ -152,8 +152,8 @@ defaults: &defaults
     timeout: 5 # socket timeout
     trigger_verbose: true
   redis:
-    host: 'cartodb-redis'
-    port: 6379
+    host: '__REDIS_HOST__'
+    port: __REDIS_PORT__
     connect_timeout: 2
     read_timeout: 3
     write_timeout: 5
@@ -670,8 +670,8 @@ test:
   <<: *defaults
   http_port: 53716
   redis:
-    host: '127.0.0.1'
-    port: 6335
+    host: '__REDIS_HOST__'
+    port: __REDIS_PORT__
   enforce_non_empty_layer_css: false
   api_requests_es_service:
     url: "http://api-calls-service.localhost.lan/search"
