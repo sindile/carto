@@ -47,8 +47,6 @@ RUN apt-get install -y -q --no-install-recommends postgresql-9.5 \
                      postgresql-server-dev-9.5 \
                      postgresql-plpython-9.5
 
-COPY pg_hba.conf /etc/postgresql/9.5/main/pg_hba.conf
-
 # -----------------------------------------------------------------
 # NodeJS
 # -----------------------------------------------------------------
@@ -142,6 +140,8 @@ RUN bundle exec grunt --environment development --force
 
 # Create configuration files
 
+ADD pg_hba.conf /etc/postgresql/9.5/main/pg_hba.conf
+ADD postgresql.conf /etc/postgresql/9.5/main/postgresql.conf
 ADD app_config.yml config/app_config.yml
 ADD database.yml config/database.yml
 
