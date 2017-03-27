@@ -72,3 +72,5 @@ gosu postgres pg_ctl -D "${PGDATA}" -o "-c listen_addresses='*'" -w start
 #/usr/sbin/service postgresql start
 
 #exec start-stop-daemon --start --chuid ${PG_USER}:${PG_USER} --exec ${PG_BINDIR}/postgres -- -D ${PGDATA}
+
+tail -f /var/log/postgresql/postgresql-9.5-main.log
