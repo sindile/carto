@@ -34,14 +34,18 @@ if [ ! -f ${DATABASE_INITIALIZED_FILE_FLAG} ]
 
 		gosu postgres psql -U postgres template_postgis -c 'CREATE OR REPLACE LANGUAGE plpgsql;'
 		gosu postgres psql -d postgres -c "UPDATE pg_database SET datistemplate='true' WHERE datname='template_postgis';"
+    ldconfig
 
-		gosu postgres psql -d template_postgis -f $POSTGIS_SQL_PATH/postgis.sql
-		gosu postgres psql -d template_postgis -f $POSTGIS_SQL_PATH/spatial_ref_sys.sql
-		gosu postgres psql -d template_postgis -f $POSTGIS_SQL_PATH/legacy.sql
-		gosu postgres psql -d template_postgis -f $POSTGIS_SQL_PATH/rtpostgis.sql
-		gosu postgres psql -d template_postgis -f $POSTGIS_SQL_PATH/topology.sql
-		gosu postgres psql -d template_postgis -c "GRANT ALL ON geometry_columns TO PUBLIC;"
-		gosu postgres psql -d template_postgis -c "GRANT ALL ON spatial_ref_sys TO PUBLIC;"
+    cd cartodb-postgresql
+    PGUSER=postgres make installcheck
+
+		#gosu postgres psql -d template_postgis -f $POSTGIS_SQL_PATH/postgis.sql
+		#gosu postgres psql -d template_postgis -f $POSTGIS_SQL_PATH/spatial_ref_sys.sql
+		#gosu postgres psql -d template_postgis -f $POSTGIS_SQL_PATH/legacy.sql
+		#gosu postgres psql -d template_postgis -f $POSTGIS_SQL_PATH/rtpostgis.sql
+		#gosu postgres psql -d template_postgis -f $POSTGIS_SQL_PATH/topology.sql
+		#gosu postgres psql -d template_postgis -c "GRANT ALL ON geometry_columns TO PUBLIC;"
+		#gosu postgres psql -d template_postgis -c "GRANT ALL ON spatial_ref_sys TO PUBLIC;"
 
 		#gosu postgres psql -U postgres template_postgis -c 'CREATE EXTENSION postgis;CREATE EXTENSION postgis_topology;'
 
