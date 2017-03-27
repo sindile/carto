@@ -10,16 +10,19 @@ FROM ubuntu:12.04
 
 # Systemp locales
 
-RUN locale-gen en_US.UTF-8 &&  update-locale
+RUN locale-gen en_US.UTF-8 && dpkg-reconfigure locales && update-locale LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8
+
 ENV LANG=en_US.UTF-8
 ENV LC_ALL=en_US.UTF-8
 ENV LANGUAGE = en_US
+
 ENV DEBIAN_FRONTEND noninteractive
 
 # Build essentials & GIT & APT tools
 
 RUN apt-get update && apt-get install -y --no-install-recommends  autoconf \
-      binutils-doc bison build-essential flex git python-software-properties
+      binutils-doc bison build-essential flex git software-properties-common \
+      python-software-properties curl
 
 # -----------------------------------------------------------------
 # PostgreSQL
@@ -28,6 +31,25 @@ RUN apt-get update && apt-get install -y --no-install-recommends  autoconf \
 # Add PPA repository
 
 RUN add-apt-repository -y ppa:cartodb/postgresql-9.5 && apt-get update
+
+# Set postgreSQL user/group IDs
+
+RUN groupadd -r postgres --gid=999 && useradd -r -g postgres --uid=999 postgres
+
+# Use gosu for postgres user
+ENV GOSU_VERSION 1.10
+RUN set -x \
+	&& apt-get update && apt-get install -y --no-install-recommends ca-certificates wget && rm -rf /var/lib/apt/lists/* \
+	&& dpkgArch="$(dpkg --print-architecture | awk -F- '{ print $NF }')" \
+	&& wget -O /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$dpkgArch" \
+	&& wget -O /usr/local/bin/gosu.asc "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$dpkgArch.asc" \
+	&& export GNUPGHOME="$(mktemp -d)" \
+	&& gpg --keyserver ha.pool.sks-keyservers.net --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4 \
+	&& gpg --batch --verify /usr/local/bin/gosu.asc /usr/local/bin/gosu \
+	&& rm -r "$GNUPGHOME" /usr/local/bin/gosu.asc \
+	&& chmod +x /usr/local/bin/gosu \
+	&& gosu nobody true \
+	&& apt-get purge -y --auto-remove ca-certificates wget
 
 # Install client packages
 
@@ -47,7 +69,7 @@ COPY pg_hba.conf /etc/postgresql/9.5/main/pg_hba.conf
 
 # Create some users used by some CartoDB apps internally
 
-RUN service postgresql start &&  createuser publicuser --no-createrole --no-createdb --no-superuser -U postgres && createuser tileuser --no-createrole --no-createdb --no-superuser -U postgres && service postgresql stop
+# RUN service postgresql start &&  createuser publicuser --no-createrole --no-createdb --no-superuser -U postgres && createuser tileuser --no-createrole --no-createdb --no-superuser -U postgres && service postgresql stop
 
 # Install CartoDB postgresql extension
 
@@ -92,13 +114,13 @@ RUN apt-get install -y -q --no-install-recommends liblwgeom-2.2.2 postgis postgr
 
 # Initialize template postgis database
 
-RUN service postgresql start && sleep 5 && \
-            createdb -T template0 -O postgres -U postgres -E UTF8 template_postgis && \
+# RUN service postgresql start && sleep 5 && \
+#            createdb -T template0 -O postgres -U postgres -E UTF8 template_postgis && \
 # If you see the eror stating the language is already enabled you are good to
             # createlang plpgsql -U postgres -d template_postgis && \
-            psql -U postgres template_postgis -c 'CREATE EXTENSION postgis;CREATE EXTENSION postgis_topology;' && \
-            ldconfig && \
-            service postgresql stop
+#            psql -U postgres template_postgis -c 'CREATE EXTENSION postgis;CREATE EXTENSION postgis_topology;' && \
+#            ldconfig && \
+#            service postgresql stop
 
 # Run an installcheck to verify the database has been installed properly
 
