@@ -59,6 +59,8 @@ RUN apt-get update \
                 postgresql-client-9.5 \
                 postgresql-client-common
 
+ENV PATH=$PATH:/usr/lib/postgresql/9.5/bin
+
 # Install server packages
 
 RUN apt-get install -y -q --no-install-recommends postgresql-9.5 \
