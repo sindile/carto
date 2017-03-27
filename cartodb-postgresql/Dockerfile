@@ -10,20 +10,16 @@ FROM ubuntu:12.04
 
 # Systemp locales
 
-RUN locale-gen en_US.UTF-8 &&  update-locale LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8
+RUN locale-gen en_US.UTF-8 &&  update-locale
+ENV LANG=en_US.UTF-8
+ENV LC_ALL=en_US.UTF-8
+ENV LANGUAGE = en_US
+ENV DEBIAN_FRONTEND noninteractive
 
-# Build essentials
+# Build essentials & GIT & APT tools
 
-RUN apt-get update && apt-get install -y --no-install-recommends  autoconf binutils-doc bison build-essential flex
-
-# GIT
-
-RUN apt-get install -y -q --no-install-recommends git
-
-# APT tools
-
-RUN apt-get install -y -q --no-install-recommends python-software-properties
-
+RUN apt-get update && apt-get install -y --no-install-recommends  autoconf \
+      binutils-doc bison build-essential flex git python-software-properties
 
 # -----------------------------------------------------------------
 # PostgreSQL
@@ -51,13 +47,13 @@ COPY pg_hba.conf /etc/postgresql/9.5/main/pg_hba.conf
 
 # Create some users used by some CartoDB apps internally
 
-# RUN service postgresql restart &&  createuser publicuser --no-createrole --no-createdb --no-superuser -U postgres && createuser tileuser --no-createrole --no-createdb --no-superuser -U postgres
+RUN service postgresql start &&  createuser publicuser --no-createrole --no-createdb --no-superuser -U postgres && createuser tileuser --no-createrole --no-createdb --no-superuser -U postgres && service postgresql stop
 
 # Install CartoDB postgresql extension
 
 RUN git clone https://github.com/CartoDB/cartodb-postgresql.git && \
               cd cartodb-postgresql && \
-              make all install
+              make all install && ldconfig
 
 
 # -----------------------------------------------------------------
@@ -96,12 +92,13 @@ RUN apt-get install -y -q --no-install-recommends liblwgeom-2.2.2 postgis postgr
 
 # Initialize template postgis database
 
-#RUN service postgresql restart && sleep 5 && \
-#            createdb -T template0 -O postgres -U postgres -E UTF8 template_postgis && \
+RUN service postgresql start && sleep 5 && \
+            createdb -T template0 -O postgres -U postgres -E UTF8 template_postgis && \
 # If you see the eror stating the language is already enabled you are good to
-#            createlang plpgsql -U postgres -d template_postgis && \
-#            psql -U postgres template_postgis -c 'CREATE EXTENSION postgis;CREATE EXTENSION postgis_topology;' && \
-#            ldconfig
+            # createlang plpgsql -U postgres -d template_postgis && \
+            psql -U postgres template_postgis -c 'CREATE EXTENSION postgis;CREATE EXTENSION postgis_topology;' && \
+            ldconfig &&
+            service postgresql stop
 
 # Run an installcheck to verify the database has been installed properly
 
