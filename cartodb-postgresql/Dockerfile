@@ -97,7 +97,7 @@ RUN service postgresql start && sleep 5 && \
 # If you see the eror stating the language is already enabled you are good to
             # createlang plpgsql -U postgres -d template_postgis && \
             psql -U postgres template_postgis -c 'CREATE EXTENSION postgis;CREATE EXTENSION postgis_topology;' && \
-            ldconfig &&
+            ldconfig && \
             service postgresql stop
 
 # Run an installcheck to verify the database has been installed properly
