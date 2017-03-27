@@ -53,10 +53,11 @@ RUN set -x \
 
 # Install client packages
 
-RUN apt-get install -y -q --no-install-recommends libpq5 \
-                     libpq-dev \
-                     postgresql-client-9.5 \
-                     postgresql-client-common
+RUN apt-get update \
+    && apt-get install -y -q --no-install-recommends libpq5 \
+                libpq-dev \
+                postgresql-client-9.5 \
+                postgresql-client-common
 
 # Install server packages
 
