@@ -1,6 +1,6 @@
 #!/bin/bash -x
 
-PGDATA="/var/lib/postgresql/9.5/main"
+PGDATA="/etc/postgresql/9.5/main"
 CARTODB="/cartodb-postgresql"
 
 FIRST_RUN_FILE_FLAG=${CARTODB}/CartoDB_setup_finished
