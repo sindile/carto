@@ -68,12 +68,6 @@ RUN apt-get install -y -q --no-install-recommends postgresql-9.5 \
                      postgresql-server-dev-9.5 \
                      postgresql-plpython-9.5
 
-COPY pg_hba.conf /etc/postgresql/9.5/main/pg_hba.conf
-
-# Create some users used by some CartoDB apps internally
-
-# RUN service postgresql start &&  createuser publicuser --no-createrole --no-createdb --no-superuser -U postgres && createuser tileuser --no-createrole --no-createdb --no-superuser -U postgres && service postgresql stop
-
 # Install CartoDB postgresql extension
 
 RUN git clone https://github.com/CartoDB/cartodb-postgresql.git && \
@@ -115,6 +109,19 @@ RUN apt-get install -y -q --no-install-recommends gdal2.1-static-bin
 RUN apt-get install -y -q --no-install-recommends libxml2-dev
 RUN apt-get install -y -q --no-install-recommends liblwgeom-2.2.2 postgis postgresql-9.5-postgis-2.2 postgresql-9.5-postgis-scripts
 
+# Correct the Error: could not open temporary statistics file "/var/run/postgresql/9.5-main.pg_stat_tmp/global.tmp": No such file or directory
+
+RUN mkdir -p /var/run/postgresql/9.5-main.pg_stat_tmp
+RUN chown postgres:postgres /var/run/postgresql/9.5-main.pg_stat_tmp -R
+
+# Add configuration files
+ADD pg_hba.conf /etc/postgresql/9.5/main/pg_hba.conf
+ADD postgresql.conf /etc/postgresql/9.5/main/postgresql.conf
+
+# Create some users used by some CartoDB apps internally
+
+# RUN service postgresql start &&  createuser publicuser --no-createrole --no-createdb --no-superuser -U postgres && createuser tileuser --no-createrole --no-createdb --no-superuser -U postgres && service postgresql stop
+
 # Initialize template postgis database
 
 # RUN service postgresql start && sleep 5 && \
@@ -126,7 +133,6 @@ RUN apt-get install -y -q --no-install-recommends liblwgeom-2.2.2 postgis postgr
 #            service postgresql stop
 
 # Run an installcheck to verify the database has been installed properly
-
 #RUN service postgresql start && sleep 10 && \
 #            ldconfig && \
 #            cd cartodb-postgresql && PGUSER=postgres make installcheck
