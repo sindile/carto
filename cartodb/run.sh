@@ -13,3 +13,7 @@ sed -i "s^__REDIS_HOST__^$REDIS_HOST^g" config/app_config.yml
 sed -i "s^__REDIS_PORT__^$REDIS_PORT^g" config/app_config.yml
 
 RAILS_ENV=$CARTO_ENV bundle exec rake db:create && RAILS_ENV=$CARTO_ENV bundle exec rake db:migrate
+
+RAILS_ENV=$CARTO_ENV bundle exec ./script/resque
+
+RAILS_ENV=$CARTO_ENV bundle exec rails server
