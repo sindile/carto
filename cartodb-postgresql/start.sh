@@ -11,7 +11,7 @@ if [ ! -f ${DATABASE_INITIALIZED_FILE_FLAG} ]
 	then
 		echo "Opening database Locally for some work ..."
 
-		gosu postgres pg_ctl -D "${PGDATA}" -o "-c listen_addresses=''" -w start
+		gosu postgres pg_ctl -D "${PGDATA}" -o "-c listen_addresses='*'" -w start
 
 
 

@@ -13,7 +13,7 @@ module.exports.log_filename = 'logs/cartodb-sql-api.log';
 // from hostname. Must have a single grabbing block.
 module.exports.user_from_host = '^(.*)\\.localhost';
 module.exports.node_port    = 8080;
-module.exports.node_host    = '172.20.0.4';
+module.exports.node_host    = '0.0.0.0';
 // idle socket timeout, in miliseconds
 module.exports.node_socket_timeout    = 600000;
 module.exports.environment  = 'development';
@@ -26,7 +26,7 @@ module.exports.db_user_pass = '<%= user_password %>'
 module.exports.db_pubuser   = 'publicuser';
 // Password for the anonymous PostgreSQL user
 module.exports.db_pubuser_pass   = 'public';
-module.exports.db_host      = 'cartodb-postgresql';
+module.exports.db_host      = 'localhost';
 module.exports.db_port      = '5432';
 module.exports.db_batch_port      = '5432';
 module.exports.finished_jobs_ttl_in_seconds = 2 * 3600; // 2 hours
@@ -70,7 +70,7 @@ module.exports.db_pool_reapInterval = 1000;
 //    enabled: true,
 //    initialDelay: 5000
 //};
-module.exports.redis_host   = 'cartodb-redis';
+module.exports.redis_host   = '127.0.0.1';
 module.exports.redis_port   = 6379;
 module.exports.redisPool    = 50;
 module.exports.redisIdleTimeoutMillis   = 100;

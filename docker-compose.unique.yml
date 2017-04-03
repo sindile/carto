@@ -1,0 +1,45 @@
+version: '2'
+services:
+
+  windshaft-cartodb:
+    build: Windshaft-cartodb/.
+    ports:
+      - "6082:6082"
+      - "6081:6081"
+      - "8181:8181"
+    environment:
+      - CARTO_ENV=development
+      - DB_HOST=docker-cartodbl
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - REDIS_HOST=docker-cartodb
+      - REDIS_PORT=6379
+      - CARTO_SESSION_DOMAIN=localdomain
+      - CORS_ENABLED=true
+      - WINDSHAFT_PORT=8181
+    links:
+      - docker-cartodb
+
+  docker-cartodb:
+    build: docker-cartodb/.
+    ports:
+      - "3000:3000"
+      - "5432:5432"
+      - "6379:6379"
+      - "8080:8080"
+    environment:
+      - LANG=en_US.UTF-8
+      - LC_ALL=en_US.UTF-8
+      - LANGUAGE=en_US
+      - PGUSER=postgres
+      - CARTO_ENV=development
+      - DB_HOST=localhost
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - REDIS_HOST=localhost
+      - REDIS_PORT=6379
+    volumes:
+      - cartodb-code:/cartodb
+
+volumes:
+  cartodb-code:

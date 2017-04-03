@@ -58,4 +58,4 @@ ADD start.sh /start.sh
 RUN chmod +x /start.sh
 ENTRYPOINT ["/start.sh"]
 
-EXPOSE 8125
+EXPOSE 8080

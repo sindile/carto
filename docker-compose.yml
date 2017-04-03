@@ -8,6 +8,7 @@ services:
       - LANG=en_US.UTF-8
       - LC_ALL=en_US.UTF-8
       - LANGUAGE=en_US
+      - PGUSER=postgres
 
   cartodb-redis:
     build: cartodb-redis/.
@@ -17,7 +18,7 @@ services:
   cartodb-sql-api:
     build: CartoDB-SQL-API/.
     ports:
-      - "8125:8125"
+      - "8080:8080"
     links:
       - cartodb-postgresql
       - cartodb-redis
@@ -48,6 +49,7 @@ services:
     links:
       - cartodb-postgresql
       - cartodb-redis
+      - cartodb-sql-api
     environment:
       - CARTO_ENV=development
       - DB_HOST=cartodb-postgresql
@@ -55,3 +57,11 @@ services:
       - DB_USER=postgres
       - REDIS_HOST=cartodb-redis
       - REDIS_PORT=6379
+
+  docker-cartodb:
+    build: docker-cartodb/.
+    ports:
+      - "3001:3000"
+      - "5433:5432"
+      - "6380:6379"
+      - "8082:8080"

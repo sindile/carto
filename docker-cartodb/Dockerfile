@@ -115,30 +115,137 @@ RUN apt-get install -y -q --no-install-recommends liblwgeom-2.2.2 postgis postgr
 RUN mkdir -p /var/run/postgresql/9.5-main.pg_stat_tmp
 RUN chown postgres:postgres /var/run/postgresql/9.5-main.pg_stat_tmp -R
 
+# -----------------------------------------------------------------
+# Redis
+# -----------------------------------------------------------------
+
+# Add redis PPA
+
+RUN add-apt-repository -y  ppa:cartodb/redis && apt-get update
+
+# Install redis
+
+RUN apt-get install -y -q --no-install-recommends redis-server
+
+# -----------------------------------------------------------------
+# NodeJS
+# -----------------------------------------------------------------
+
+# Add the PPA
+
+RUN add-apt-repository -y ppa:cartodb/nodejs-010 && apt-get update
+
+RUN apt-get install -y -q --no-install-recommends nodejs
+
+RUN npm install npm@2.14.16 -g
+
+
+# -----------------------------------------------------------------
+# SQL API
+# -----------------------------------------------------------------
+
+# Download API
+
+RUN git clone git://github.com/CartoDB/CartoDB-SQL-API.git && \
+        cd CartoDB-SQL-API && \
+        git checkout master
+
+# Install npm dependencies
+
+RUN cd /CartoDB-SQL-API && npm install
+
+# -----------------------------------------------------------------
+# Ruby
+# -----------------------------------------------------------------
+
+# Download ruby-install
+
+RUN apt-get install -y -q --no-install-recommends wget && \
+      wget -O ruby-install-0.5.0.tar.gz https://github.com/postmodern/ruby-install/archive/v0.5.0.tar.gz && \
+      tar -xzvf ruby-install-0.5.0.tar.gz && \
+      cd ruby-install-0.5.0 && \
+      make install
+
+# Install some ruby dependencies
+
+RUN apt-get install -y -q --no-install-recommends libreadline6-dev openssl
+
+# Install ruby 2.2.3
+
+RUN ruby-install ruby 2.2.3
+
+# add the Ruby 2.2.3 bin folder to your PATH variable
+
+ENV PATH=$PATH:/opt/rubies/ruby-2.2.3/bin
+
+# Install bundler
+
+RUN gem install bundler
+
+# Install compass
+
+RUN gem install compass
+
+# -----------------------------------------------------------------
+# Editor
+# -----------------------------------------------------------------
+
+# Download the editor code
+
+RUN git clone --recursive https://github.com/teanocrata/cartodb.git
+
+WORKDIR cartodb
+
+# Install pip
+
+RUN wget  -O /tmp/get-pip.py https://bootstrap.pypa.io/get-pip.py && python /tmp/get-pip.py
+
+# Install a necessary package for python dependencies
+
+RUN apt-get install -y -q --no-install-recommends python-all-dev
+
+# Install dependencies
+
+RUN apt-get install -y -q --no-install-recommends imagemagick unp zip libpq-dev libicu-dev
+RUN RAILS_ENV=development bundle install
+RUN npm install
+
+# Install GDAL
+
+# Add GIS PPA
+
+RUN add-apt-repository -y ppa:cartodb/gis && apt-get update
+
+RUN apt-get install -y -q --no-install-recommends gdal-bin libgdal1-dev libgdal-dev
+RUN apt-get install -y -q --no-install-recommends gdal2.1-static-bin
+
+RUN CPLUS_INCLUDE_PATH=/usr/include/gdal C_INCLUDE_PATH=/usr/include/gdal PATH=$PATH:/usr/include/gdal pip install --no-use-wheel -r python_requirements.txt
+
+# Add the grunt command to the PATH
+
+ENV PATH=$PATH:/cartodb/node_modules/grunt-cli/bin
+
+# Install all necesary gems
+
+RUN bundle install
+
+# Precompile assets
+
+RUN bundle exec grunt --environment development --force
+
 # Add configuration files
+
 ADD pg_hba.conf /etc/postgresql/9.5/main/pg_hba.conf
 ADD postgresql.conf /etc/postgresql/9.5/main/postgresql.conf
+ADD app_config.yml /cartodb/config/app_config.yml
+ADD database.yml /cartodb/config/database.yml
+ADD ./development.js /CartoDB-SQL-API/config/environments/development.js
 
-# Create some users used by some CartoDB apps internally
 
-# RUN service postgresql start &&  createuser publicuser --no-createrole --no-createdb --no-superuser -U postgres && createuser tileuser --no-createrole --no-createdb --no-superuser -U postgres && service postgresql stop
+EXPOSE 3000 8080 8181
 
-# Initialize template postgis database
+ENV GDAL_DATA /usr/share/gdal/1.10
 
-# RUN service postgresql start && sleep 5 && \
-#            createdb -T template0 -O postgres -U postgres -E UTF8 template_postgis && \
-# If you see the eror stating the language is already enabled you are good to
-            # createlang plpgsql -U postgres -d template_postgis && \
-#            psql -U postgres template_postgis -c 'CREATE EXTENSION postgis;CREATE EXTENSION postgis_topology;' && \
-#            ldconfig && \
-#            service postgresql stop
+ADD ./run.sh /opt/run.sh
 
-# Run an installcheck to verify the database has been installed properly
-#RUN service postgresql start && sleep 10 && \
-#            ldconfig && \
-#            cd cartodb-postgresql && PGUSER=postgres make installcheck
-
-ADD start.sh /start.sh
-RUN chmod +x /start.sh
-ENTRYPOINT ["/start.sh"]
-EXPOSE 5432
+CMD ["/bin/bash", "/opt/run.sh"]
