@@ -41,5 +41,21 @@ services:
     volumes:
       - cartodb-code:/cartodb
 
+  pgAdmin:
+    image: fenglc/pgadmin4
+    links:
+      - docker-cartodb:postgres
+    ports:
+      - "5050:5050"
+
+  atom:
+    image: atom
+    environment:
+      - DISPLAY=unix$DISPLAY
+    volumes:
+      - cartodb-code:/cartodb
+      - /tmp/.X11-unix:/tmp/.X11-unix
+
+
 volumes:
   cartodb-code:
