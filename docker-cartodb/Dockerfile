@@ -248,4 +248,6 @@ ENV GDAL_DATA /usr/share/gdal/1.10
 
 ADD ./run.sh /opt/run.sh
 
-CMD ["/bin/bash", "/opt/run.sh"]
+ENTRYPOINT /opt/run.sh && /bin/bash
+
+CMD ["/bin/bash"]

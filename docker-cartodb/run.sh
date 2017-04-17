@@ -100,11 +100,28 @@ sed -i "s^__REDIS_PORT__^$REDIS_PORT^g" config/database.yml
 sed -i "s^__REDIS_HOST__^$REDIS_HOST^g" config/app_config.yml
 sed -i "s^__REDIS_PORT__^$REDIS_PORT^g" config/app_config.yml
 
+echo
+echo "Starting Rake migrate..."
+echo
+
 RAILS_ENV=$CARTO_ENV bundle exec rake db:create && RAILS_ENV=$CARTO_ENV bundle exec rake db:migrate
+
+echo
+echo "Starting resque..."
+echo
 
 RAILS_ENV=$CARTO_ENV bundle exec ./script/resque > resque.log 2>&1 &
 
-RAILS_ENV=$CARTO_ENV bundle exec rails server
+if [[ $START_RAILS_SERVER ]]; then
+  echo
+  echo "Starting rails server..."
+  echo
+  RAILS_ENV=$CARTO_ENV bundle exec rails server
+else
+  echo
+  echo "CartoDB environment initialized. Now you can exec bash command in docker_cartodb container to start development."
+  echo
+fi
 
 #cd /cartodb
 #source /usr/local/rvm/scripts/rvm

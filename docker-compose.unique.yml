@@ -40,6 +40,7 @@ services:
       - REDIS_PORT=6379
     volumes:
       - cartodb-code:/cartodb
+    tty: true
 
   pgAdmin:
     image: fenglc/pgadmin4
@@ -49,12 +50,14 @@ services:
       - "5050:5050"
 
   atom:
-    image: atom
+    build: atom/.
     environment:
       - DISPLAY=unix$DISPLAY
     volumes:
       - cartodb-code:/cartodb
       - /tmp/.X11-unix:/tmp/.X11-unix
+      - ./atom/application.json:/root/.atom/storage/application.json
+      - ./atom/config.cson:/root/.atom/config.cson
 
 
 volumes:
