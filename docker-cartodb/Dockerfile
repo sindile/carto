@@ -242,7 +242,7 @@ ADD database.yml /cartodb/config/database.yml
 ADD ./development.js /CartoDB-SQL-API/config/environments/development.js
 
 
-EXPOSE 3000 8080 8181
+EXPOSE 3000 8080 8181 8089
 
 ENV GDAL_DATA /usr/share/gdal/1.10
 

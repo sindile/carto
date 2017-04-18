@@ -27,6 +27,7 @@ services:
       - "5432:5432"
       - "6379:6379"
       - "8080:8080"
+      - "8089:8089"
     environment:
       - LANG=en_US.UTF-8
       - LC_ALL=en_US.UTF-8
