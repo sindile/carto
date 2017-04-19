@@ -97,7 +97,7 @@ RUN gem install compass
 
 # Download the editor code
 
-RUN git clone --recursive https://github.com/CartoDB/cartodb.git
+RUN git clone --recursive https://github.com/teanocrata/cartodb.git
 
 WORKDIR cartodb
 
@@ -151,4 +151,4 @@ RUN chmod 755 /*.sh
 
 ENTRYPOINT ["/run.sh"]
 
-EXPOSE 3000
+EXPOSE 3000 8089

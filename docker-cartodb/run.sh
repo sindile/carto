@@ -113,11 +113,13 @@ echo
 RAILS_ENV=$CARTO_ENV bundle exec ./script/resque > resque.log 2>&1 &
 
 if [[ $START_RAILS_SERVER ]]; then
+  sed -i "s^__APP_ASSETS_HOST__^$APP_ASSETS_HOST^g" config/app_config.yml
   echo
   echo "Starting rails server..."
   echo
   RAILS_ENV=$CARTO_ENV bundle exec rails server
 else
+  sed -i "s^__APP_ASSETS_HOST__^$APP_ASSETS_DEVELOPMENT_HOST^g" config/app_config.yml
   echo
   echo "CartoDB environment initialized. Now you can exec bash command in docker_cartodb container to start development."
   echo

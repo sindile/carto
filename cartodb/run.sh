@@ -11,8 +11,11 @@ sed -i "s^__REDIS_HOST__^$REDIS_HOST^g" config/database.yml
 sed -i "s^__REDIS_PORT__^$REDIS_PORT^g" config/database.yml
 sed -i "s^__REDIS_HOST__^$REDIS_HOST^g" config/app_config.yml
 sed -i "s^__REDIS_PORT__^$REDIS_PORT^g" config/app_config.yml
+sed -i "s^__APP_ASSETS_HOST__^$APP_ASSETS_HOST^g" config/app_config.yml
 
 RAILS_ENV=$CARTO_ENV bundle exec rake db:create && RAILS_ENV=$CARTO_ENV bundle exec rake db:migrate
+
+RAILS_ENV=$CARTO_ENV bundle exec grunt --environment development dev > assets_server.log 2>&1 &
 
 RAILS_ENV=$CARTO_ENV bundle exec ./script/resque > resque.log 2>&1 &
 

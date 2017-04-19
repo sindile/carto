@@ -287,7 +287,7 @@ defaults: &defaults
     #   max_size_in_bytes: 1048576 # Optional, default is 1 MB
     #   location: 'organization_assets' # Optional subdirectory for local assets, default is 'organization_assets'
   app_assets:
-    asset_host: "//cartodb-libs.global.ssl.fastly.net/cartodbui"
+    asset_host: __APP_ASSETS_HOST__
   avatars:
     gravatar_enabled: true
     base_url: '/assets/unversioned/images/avatars'
