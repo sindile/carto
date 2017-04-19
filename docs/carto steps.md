@@ -1,3 +1,27 @@
+1.  [Manual tests](#manual-test)
+    1.  [Environment setup](#environment-setup)
+    1.  [User admin tests](#user-admin-test-from-specrequestsadminusers_controller_specrb)
+        1.  [deletes if password match](#delete-development-user-with-web-app-specrequestsadminusers_controller_specrbdeletes-if-password-match)
+        1.  [should not delete if password match but has unregistered tables](#delete-development-user-with-web-app-specrequestsadminusers_controller_specrbshould-not-delete-if-password-match-but-has-unregistered-tables)
+        1.  [should delete if password match and has ghost tables](#specrequestsadminusers_controller_specrbdeletes-if-password-match-has-unregistered-tables-and-force_param)
+        1.  [should not delete if password match but has unregistered tables](#delete-development-user-with-web-app-specrequestsadminusers_controller_specrb-should-not-delete-if-password-match-but-has-unregistered-tables)
+        1.  [deletes if password match, has unregistered tables and force_param](#delete-development-user-with-web-app-with-unregistered-tables-and-force-param-specrequestsadminusers_controller_specrb-deletes-if-password-match-has-unregistered-tables-and-force_param)
+    1.  [EUMAPI](#eumapi-specrequestscartoapiorganization_users_controller_specrb)
+        1.  [should delete users](#delete-org-user-with-eumapi-specrequestscartoapiorganization_users_controller_specrb-should-delete-users)
+        1.  [should delete users with ghost tables](#delete-org-user-with-eumapi-specrequestscartoapiorganization_users_controller_specrb-should-delete-users-with-ghost-tables)
+        1.  [should not delete users with unregistered tables](#delete-org-user-with-eumapi-specrequestscartoapiorganization_users_controller_specrb-should-not-delete-users-with-unregistered-tables)
+        1.  [should delete users with unregistered tables when force](#delete-org-user-with-eumapi-and-force-param-specrequestscartoapiorganization_users_controller_specrb-should-delete-users-with-unregistered-tables-when-force)
+    1.  [Organization admin](#organization-admin-specrequestsadminorganization_users_controller_specrb)
+        1.  [deletes users](#delete-org-user-with-organization-admin-specrequestsadminorganization_users_controller_specrb-deletes-users)
+        1.  [should not delete users with unregistered tables](#delete-org-user-with-organization-admin-specrequestsadminorganization_users_controller_specrb-should-not-delete-users-with-unregistered-tables)
+        1.  [should delete users with unregistered tables when force](#delete-org-user-with-organization-admin-and-force-delete-specrequestsadminorganization_users_controller_specrb-should-delete-users-with-unregistered-tables-when-force)
+        1.  [should delete users with ghost tables](#delete-org-user-with-organization-admin-specrequestsadminorganization_users_controller_specrb-should-delete-users-with-ghost-tables)
+1.  [Automated tests](#automated-test)
+---
+---
+## Manual test
+### Environment setup
+
 Steps to reproduce and test solution for ["force" user deletion for EUMAPI #11654](https://github.com/CartoDB/cartodb/issues/11654)
 
 1.  Init environment (using <https://github.com/teanocrata/carto.git> project with dockerized environment)
@@ -31,15 +55,15 @@ Steps to reproduce and test solution for ["force" user deletion for EUMAPI #1165
     Go to <http://development.localhost.lan:3000/your_apps> and get the API key
     API key: 6c3e8336532a5889177a156706f76595634880bc
 
-## User admin (Test from spec/requests/admin/users_controller_spec.rb)
+### User admin (Test from spec/requests/admin/users_controller_spec.rb)
 
-### Delete development user with web app (spec/requests/admin/users_controller_spec.rb:'deletes if password match')
+#### Delete development user with web app (spec/requests/admin/users_controller_spec.rb:'deletes if password match')
 
 1.  Go to <http://development.localhost.lan:3000/account> and click on "Delete my account and all my data" at the bottom of the page withouth force delete
 
 **Should return to home and show 404 page because user has be deleted**
 
-### Delete development user with web app (spec/requests/admin/users_controller_spec.rb:'should not delete if password match but has unregistered tables')
+#### Delete development user with web app (spec/requests/admin/users_controller_spec.rb:'should not delete if password match but has unregistered tables')
 
 1.  Open a new console
     ```
@@ -63,13 +87,13 @@ Steps to reproduce and test solution for ["force" user deletion for EUMAPI #1165
 
 **Should find the error message: "Error deleting user: Cannot delete user, Has unregistered tables, force deletion available. "**
 
-### (spec/requests/admin/users_controller_spec.rb:'deletes if password match, has unregistered tables and force_param')
+#### (spec/requests/admin/users_controller_spec.rb:'deletes if password match, has unregistered tables and force_param')
 
 Now, check "Force deletion" Toggle and click on "Delete my account and all my data"
 
 **Should return to home and show 404 page because user has be deleted**
 
-### Delete development user with web app (spec/requests/admin/users_controller_spec.rb: 'should delete if password match and has ghost tables')
+#### Delete development user with web app (spec/requests/admin/users_controller_spec.rb: 'should delete if password match and has ghost tables')
 1.  Create a development user
     From cartodb machine:
     ```
@@ -89,7 +113,7 @@ Now, check "Force deletion" Toggle and click on "Delete my account and all my da
 
 **Should return to home and show 404 page because user has be deleted**
 
-### Delete development user with web app (spec/requests/admin/users_controller_spec.rb: 'should not delete if password match but has unregistered tables')
+#### Delete development user with web app (spec/requests/admin/users_controller_spec.rb: 'should not delete if password match but has unregistered tables')
 
 1.  Create a development user
     From cartodb machine:
@@ -108,13 +132,13 @@ Now, check "Force deletion" Toggle and click on "Delete my account and all my da
 
 **Should find the error message: "Error deleting user: Cannot delete user, Has unregistered tables, force deletion available. "**
 
-### Delete development user with web app, with unregistered tables and force param (spec/requests/admin/users_controller_spec.rb: 'deletes if password match, has unregistered tables and force_param')
+#### Delete development user with web app, with unregistered tables and force param (spec/requests/admin/users_controller_spec.rb: 'deletes if password match, has unregistered tables and force_param')
 
 Now, check "Force deletion" Toggle and click on "Delete my account and all my data"
 
 **Should return to home and show 404 page because user has be deleted**
 
-## EUMAPI (spec/requests/carto/api/organization_users_controller_spec.rb)
+### EUMAPI (spec/requests/carto/api/organization_users_controller_spec.rb)
 
 1.  Create a development user
     From cartodb machine:
@@ -136,7 +160,7 @@ Now, check "Force deletion" Toggle and click on "Delete my account and all my da
     $ echo "127.0.0.1 testorg.localhost.lan" | sudo tee -a /etc/hosts
     ```
 
-### Delete org-user with EUMAPI (spec/requests/carto/api/organization_users_controller_spec.rb: 'should delete users')
+#### Delete org-user with EUMAPI (spec/requests/carto/api/organization_users_controller_spec.rb: 'should delete users')
 
 1.  Create a user in the organization with write permission (builder) with EUMAPI
     ```
@@ -157,7 +181,7 @@ Now, check "Force deletion" Toggle and click on "Delete my account and all my da
 
 **Should: "User deleted"**
 
-### Delete org-user with EUMAPI (spec/requests/carto/api/organization_users_controller_spec.rb: 'should delete users with ghost tables')
+#### Delete org-user with EUMAPI (spec/requests/carto/api/organization_users_controller_spec.rb: 'should delete users with ghost tables')
 
 1.  Create a user in the organization with write permission (builder) with EUMAPI
     ```
@@ -180,7 +204,7 @@ Now, check "Force deletion" Toggle and click on "Delete my account and all my da
 
 **Should: "User deleted"**
 
-### Delete org-user with EUMAPI (spec/requests/carto/api/organization_users_controller_spec.rb: 'should not delete users with unregistered tables')
+#### Delete org-user with EUMAPI (spec/requests/carto/api/organization_users_controller_spec.rb: 'should not delete users with unregistered tables')
 
 1.  Create a user in the organization with write permission (builder) with EUMAPI
     ```
@@ -198,7 +222,7 @@ Now, check "Force deletion" Toggle and click on "Delete my account and all my da
 
 **Should: "User couldn't be deleted:  Cannot delete user, Has unregistered tables, force deletion available."**
 
-### Delete org-user with EUMAPI and force param (spec/requests/carto/api/organization_users_controller_spec.rb: 'should delete users with unregistered tables when force')
+#### Delete org-user with EUMAPI and force param (spec/requests/carto/api/organization_users_controller_spec.rb: 'should delete users with unregistered tables when force')
 
 1.  ```
     curl -H 'Content-Type: application/json' testorg.localhost.lan:3000/u/development/api/v1/organization/testorg/users/org-user -X DELETE --data '{"api_key":"21b4933b346d01c3f20c4e858c0a8ac168193dad", "force_delete": "true"}'
@@ -206,9 +230,9 @@ Now, check "Force deletion" Toggle and click on "Delete my account and all my da
 
 **Should: "User deleted"**
 
-## Organization admin (spec/requests/admin/organization_users_controller_spec.rb)
+### Organization admin (spec/requests/admin/organization_users_controller_spec.rb)
 
-### Delete org-user with organization admin (spec/requests/admin/organization_users_controller_spec.rb: 'deletes users')
+#### Delete org-user with organization admin (spec/requests/admin/organization_users_controller_spec.rb: 'deletes users')
 1.  Create a user in the organization
     Login into <http://testorg.localhost.lan:3000> with development/development
     At <http://testorg.localhost.lan:3000/u/development/organization>
@@ -223,7 +247,7 @@ Now, check "Force deletion" Toggle and click on "Delete my account and all my da
 
 **Should: "User was successfully deleted."**
 
-### Delete org-user with organization admin (spec/requests/admin/organization_users_controller_spec.rb: 'should not delete users with unregistered tables')
+#### Delete org-user with organization admin (spec/requests/admin/organization_users_controller_spec.rb: 'should not delete users with unregistered tables')
 
 1.  Create a user in the organization
     Login into <http://testorg.localhost.lan:3000> with development/development
@@ -243,14 +267,14 @@ Now, check "Force deletion" Toggle and click on "Delete my account and all my da
     At the bottom of the page click on DELETE USER
 
 **Should: "User was not deleted. Cannot delete user, Has unregistered tables, force deletion available. "**
-### Delete org-user with organization admin and force delete (spec/requests/admin/organization_users_controller_spec.rb: 'should delete users with unregistered tables when force')
+#### Delete org-user with organization admin and force delete (spec/requests/admin/organization_users_controller_spec.rb: 'should delete users with unregistered tables when force')
 
 1.  At <http://testorg.localhost.lan:3000/u/development/organization/users/org-user/edit>
     At the bottom of the page click on toggle button "Ferce delete" and click on DELETE USER
 
 **Should: "User was successfully deleted. "**
 
-### Delete org-user with organization admin (spec/requests/admin/organization_users_controller_spec.rb: 'should delete users with ghost tables')
+#### Delete org-user with organization admin (spec/requests/admin/organization_users_controller_spec.rb: 'should delete users with ghost tables')
 
 1.  Create a user in the organization
     Login at <http://testorg.localhost.lan:3000> with development/development
@@ -272,3 +296,29 @@ Now, check "Force deletion" Toggle and click on "Delete my account and all my da
     At the bottom of the page click on DELETE USER
 
 **Should: "User was successfully deleted. "**
+
+## Automated test
+
+At cartodb container
+
+```
+# bundle exec rake cartodb:test:prepare
+```
+
+### User admin
+
+```
+# bundle exec rspec spec/requests/admin/users_controller_spec.rb:30
+```
+
+### EUMAPI
+
+```
+# bundle exec spec/requests/carto/api/organization_users_controller_spec.rb:504
+```
+
+### Organization admin
+
+```
+# bundle exec spec/requests/admin/organization_users_controller_spec.rb:116
+```
