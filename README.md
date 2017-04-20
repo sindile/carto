@@ -72,6 +72,10 @@ What things you need to install the software and how to install them
 
 [docker-compose](https://docs.docker.com/compose/)
 
+## Development configuration
+
+'docker-compose.development.yml' is a docker-compose file that creates a complete development environment for cartodb, it mounts a volume with the code and launch an atom editos with all configurations than you need. You have an step by step example [here](../blob/master/docs/carto%20steps.md)
+
 ## Acknowledgments
 
 *   Made following [CartoDB Platform Documentation](http://cartodb.readthedocs.io/en/latest/index.html)
