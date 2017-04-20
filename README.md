@@ -2,7 +2,7 @@
 
 CARTO is an open platform for analyze located data. This projects is aims to 'dockerized' carto for development and testing.
 
-The project was created for solves [this issue](https://github.com/CartoDB/cartodb/issues/11654) at the fork repository: <https://github.com/teanocrata/cartodb>. For this reason all images are builded from official cartodb repos
+The project was created for solves [this issue](https://github.com/CartoDB/cartodb/issues/11654) at the fork repository: <https://github.com/teanocrata/cartodb>. For this reason all images are builded from official cartodb repos except cartodb.
 
 ## Getting Started
 
@@ -28,17 +28,17 @@ Start containers
 > ```
 
 1.  First time you start cartodb-postgresql service container, it configures the database an runs install cheack > test. You can start only this service and wait until tests passing.
-    ```docker-compose up -d cartodb-postgresql```
+    ```$ docker-compose up -d cartodb-postgresql```
 1.  Follow tail until test passing, you can exit tail with Ctrl+C
    `docker-compose logs -f --tail="all"`
 1.  Start cartodb-redis
-    ```docker-compose up -d cartodb-redis```
+    ```$ docker-compose up -d cartodb-redis```
 1.  Start cartodb-sql-api
-    ```docker-compose up -d cartodb-sql-api```
+    ```$ docker-compose up -d cartodb-sql-api```
 1.  Start windshaft-cartodb
-    ```docker-compose up -d windshaft-cartodb```
+    ```$ docker-compose up -d windshaft-cartodb```
 1.  Start cartodb
-    ```docker-compose up -d cartodb```
+    ```$ docker-compose up -d cartodb```
 
 
 Attach to cartodb container to setting up an user [CartoDB Platform Documentation: Running CartoDB](http://cartodb.readthedocs.io/en/latest/run.html)
@@ -75,4 +75,4 @@ What things you need to install the software and how to install them
 *   Made following [CartoDB Platform Documentation](http://cartodb.readthedocs.io/en/latest/index.html)
 *   Ussing CartoBD projects from [CARTO GitHub Repo](https://github.com/cartodb)
 *   Consulted repositories:
-    * [sverhoeven/docker-cartodb](https://github.com/sverhoeven/docker-cartodb)
+    *   [sverhoeven/docker-cartodb](https://github.com/sverhoeven/docker-cartodb)
