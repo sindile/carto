@@ -15,7 +15,7 @@ sed -i "s^__APP_ASSETS_HOST__^$APP_ASSETS_HOST^g" config/app_config.yml
 
 RAILS_ENV=$CARTO_ENV bundle exec rake db:create && RAILS_ENV=$CARTO_ENV bundle exec rake db:migrate
 
-RAILS_ENV=$CARTO_ENV bundle exec grunt --environment development dev > assets_server.log 2>&1 &
+bundle exec grunt --environment $CARTO_ENV dev > assets_server.log 2>&1 &
 
 RAILS_ENV=$CARTO_ENV bundle exec ./script/resque > resque.log 2>&1 &
 

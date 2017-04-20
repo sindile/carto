@@ -42,6 +42,7 @@ services:
     links:
       - cartodb-postgresql
       - cartodb-redis
+
   cartodb:
     build: cartodb/.
     ports:
@@ -59,11 +60,3 @@ services:
       - REDIS_HOST=cartodb-redis
       - REDIS_PORT=6379
       - APP_ASSETS_HOST=http://localhost:8089/public
-
-  docker-cartodb:
-    build: docker-cartodb/.
-    ports:
-      - "3001:3000"
-      - "5433:5432"
-      - "6380:6379"
-      - "8082:8080"
