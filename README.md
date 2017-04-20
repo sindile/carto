@@ -4,6 +4,8 @@ CARTO is an open platform for analyze located data. This projects is aims to 'do
 
 The project was created for solves [this issue](https://github.com/CartoDB/cartodb/issues/11654) at the fork repository: <https://github.com/teanocrata/cartodb>. For this reason all images are builded from official cartodb repos except cartodb.
 
+![](http://i.imgur.com/AKGN5LN.jpg)
+
 ## Getting Started
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
